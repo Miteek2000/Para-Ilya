@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Ilya 🌸 — Nuestro Primer Mes</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #fdf6f9;
+    min-height: 100vh;
+    font-family: 'Lato', sans-serif;
+    overflow-x: hidden;
+  }
+
+  .petals-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .petal {
+    position: absolute;
+    opacity: 0;
+    animation: sakuraFall linear infinite;
+  }
+
+  @keyframes sakuraFall {
+    0%   { transform: translateY(-60px) rotate(0deg) translateX(0px); opacity: 0; }
+    8%   { opacity: 0.85; }
+    80%  { opacity: 0.6; }
+    100% { transform: translateY(108vh) rotate(300deg) translateX(50px); opacity: 0; }
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 3.5rem 1.5rem 5rem;
+  }
+
+  .branch-wrap { text-align: center; margin-bottom: 0.5rem; }
+
+  .header { text-align: center; margin-bottom: 2.8rem; }
+
+  .title-main {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    color: #8b4a6b;
+    line-height: 1.2;
+    margin-bottom: 0.3rem;
+    letter-spacing: 1px;
+  }
+
+  .title-sub {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: #c48aaa;
+    letter-spacing: 2px;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 1.8rem 0;
+  }
+  .divider-line {
+    flex: 1;
+    height: 0.5px;
+    background: linear-gradient(to right, transparent, #e8b4cc, transparent);
+  }
+  .divider-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #e8b4cc;
+  }
+
+  /* ── CARDS con borde acuarela SVG ── */
+  .card-wrap {
+    position: relative;
+    margin-bottom: 2rem;
+  }
+
+  .card-watercolor-border {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: visible;
+  }
+
+  .card-inner {
+    position: relative;
+    z-index: 1;
+    padding: 2.2rem 2rem 2rem;
+    border-radius: 18px;
+  }
+
+  .card-inner.letter  { background: rgba(255,250,252,0.92); }
+  .card-inner.songs   { background: rgba(255,245,248,0.92); text-align: center; }
+  .card-inner.spotify { background: rgba(248,252,248,0.92); padding: 0; overflow: hidden; border-radius: 18px; }
+
+  .card-letter::before {
+    content: '❝';
+    position: absolute;
+    top: 8px; left: 20px;
+    font-size: 5rem;
+    color: #f0ccd8;
+    font-family: Georgia, serif;
+    line-height: 1;
+    opacity: 0.6;
+    z-index: 0;
+  }
+
+  .card-label {
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #c48aaa;
+    margin-bottom: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .letter-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: #5c3a4e;
+    line-height: 2;
+    position: relative;
+    z-index: 1;
+  }
+
+  .letter-signature {
+    margin-top: 1.6rem;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: #b07090;
+    font-size: 1.05rem;
+    text-align: right;
+  }
+
+  .songs-blossom { margin-bottom: 0.8rem; }
+
+  .songs-desc {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: #7a4a60;
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .spotify-header {
+    padding: 1.1rem 1.4rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 0.5px solid #c8e8d0;
+    background: #f0faf3;
+  }
+
+  .spotify-icon {
+    width: 34px; height: 34px;
+    background: #1DB954;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .spotify-icon svg { width: 18px; height: 18px; fill: #fff; }
+
+  .spotify-title {
+    font-family: 'Playfair Display', serif;
+    color: #2d6642;
+    font-size: 0.95rem;
+  }
+
+  .spotify-sub { font-size: 0.75rem; color: #6aaa84; margin-top: 2px; }
+
+  .spotify-embed { width: 100%; border: none; display: block; }
+
+  .footer { text-align: center; margin-top: 1.5rem; }
+
+  .footer-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: #c48aaa;
+  }
+
+  .heart-wrap {
+    margin-top: 1rem;
+    animation: heartbeat 1.6s ease-in-out infinite;
+    display: inline-block;
+  }
+
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    14% { transform: scale(1.18); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.12); }
+    56% { transform: scale(1); }
+  }
+</style>
+</head>
+<body>
+
+<div class="petals-bg" id="petals"></div>
+
+<div class="page">
+
+  <div class="branch-wrap">
+    <svg width="420" height="130" viewBox="0 0 420 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M30 110 Q120 80 200 70 Q290 58 390 40" stroke="#c8967a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <path d="M100 87 Q110 60 130 45" stroke="#c8967a" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+      <path d="M160 76 Q165 50 180 30" stroke="#c8967a" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+      <path d="M240 67 Q248 42 265 22" stroke="#c8967a" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+      <path d="M310 55 Q318 35 328 18" stroke="#c8967a" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+      <path d="M200 70 Q195 45 205 25" stroke="#c8967a" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+      <g transform="translate(128,38)">
+        <circle cx="0" cy="-7" r="4.5" fill="#f9ccd8" opacity="0.9"/>
+        <circle cx="6.6" cy="-2.2" r="4.5" fill="#f5b8cc" opacity="0.9"/>
+        <circle cx="4.1" cy="5.8" r="4.5" fill="#f9ccd8" opacity="0.9"/>
+        <circle cx="-4.1" cy="5.8" r="4.5" fill="#f5b8cc" opacity="0.9"/>
+        <circle cx="-6.6" cy="-2.2" r="4.5" fill="#f9ccd8" opacity="0.9"/>
+        <circle cx="0" cy="0" r="3" fill="#fde8f0"/>
+        <circle cx="0" cy="0" r="1.5" fill="#e89ab8"/>
+      </g>
+      <g transform="translate(178,22)">
+        <circle cx="0" cy="-6.5" r="4" fill="#fbd0e0" opacity="0.9"/>
+        <circle cx="6.2" cy="-2" r="4" fill="#f7bcd2" opacity="0.9"/>
+        <circle cx="3.8" cy="5.4" r="4" fill="#fbd0e0" opacity="0.9"/>
+        <circle cx="-3.8" cy="5.4" r="4" fill="#f7bcd2" opacity="0.9"/>
+        <circle cx="-6.2" cy="-2" r="4" fill="#fbd0e0" opacity="0.9"/>
+        <circle cx="0" cy="0" r="2.8" fill="#fdeaf2"/>
+        <circle cx="0" cy="0" r="1.3" fill="#e898b6"/>
+      </g>
+      <g transform="translate(263,15)">
+        <circle cx="0" cy="-7" r="4.5" fill="#f9ccd8" opacity="0.95"/>
+        <circle cx="6.6" cy="-2.2" r="4.5" fill="#f5b8cc" opacity="0.95"/>
+        <circle cx="4.1" cy="5.8" r="4.5" fill="#f9ccd8" opacity="0.95"/>
+        <circle cx="-4.1" cy="5.8" r="4.5" fill="#f5b8cc" opacity="0.95"/>
+        <circle cx="-6.6" cy="-2.2" r="4.5" fill="#f9ccd8" opacity="0.95"/>
+        <circle cx="0" cy="0" r="3" fill="#fde8f0"/>
+        <circle cx="0" cy="0" r="1.5" fill="#e89ab8"/>
+      </g>
+      <g transform="translate(326,12)">
+        <circle cx="0" cy="-6" r="4" fill="#fbd4e2" opacity="0.9"/>
+        <circle cx="5.7" cy="-1.9" r="4" fill="#f7c0d4" opacity="0.9"/>
+        <circle cx="3.5" cy="5" r="4" fill="#fbd4e2" opacity="0.9"/>
+        <circle cx="-3.5" cy="5" r="4" fill="#f7c0d4" opacity="0.9"/>
+        <circle cx="-5.7" cy="-1.9" r="4" fill="#fbd4e2" opacity="0.9"/>
+        <circle cx="0" cy="0" r="2.6" fill="#fdeaf2"/>
+        <circle cx="0" cy="0" r="1.2" fill="#e898b6"/>
+      </g>
+      <g transform="translate(200,18)">
+        <circle cx="0" cy="-5.5" r="3.5" fill="#fccfdd" opacity="0.85"/>
+        <circle cx="5.2" cy="-1.7" r="3.5" fill="#f8bbce" opacity="0.85"/>
+        <circle cx="3.2" cy="4.6" r="3.5" fill="#fccfdd" opacity="0.85"/>
+        <circle cx="-3.2" cy="4.6" r="3.5" fill="#f8bbce" opacity="0.85"/>
+        <circle cx="-5.2" cy="-1.7" r="3.5" fill="#fccfdd" opacity="0.85"/>
+        <circle cx="0" cy="0" r="2.4" fill="#fdeaf2"/>
+        <circle cx="0" cy="0" r="1.1" fill="#e898b6"/>
+      </g>
+      <ellipse cx="95" cy="72" rx="4" ry="6" fill="#f9b8ce" transform="rotate(-20,95,72)" opacity="0.8"/>
+      <ellipse cx="350" cy="36" rx="3.5" ry="5" fill="#f9b8ce" transform="rotate(15,350,36)" opacity="0.8"/>
+      <ellipse cx="155" cy="58" rx="3" ry="5" fill="#fcccda" transform="rotate(-10,155,58)" opacity="0.75"/>
+    </svg>
+  </div>
+
+  <div class="header">
+    <h1 class="title-main">Para Ilya</h1>
+    <p class="title-sub">con amor, en nuestro primer mes</p>
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-dot"></div>
+    <div class="divider-dot" style="background:#f5b8cc;"></div>
+    <div class="divider-dot"></div>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- CARTA con borde acuarela -->
+  <div class="card-wrap" id="wrap-letter">
+    <svg class="card-watercolor-border" id="border-letter" preserveAspectRatio="none"></svg>
+    <div class="card-inner letter card-letter">
+      <div class="card-label">✦ &nbsp; carta para ti</div>
+      <p class="letter-text">
+        Hoy es un día muy especial porque estamos cumpliendo nuestro primer mes. Quiero que sepas que, desde antes de que fuéramos novios, me la pasaba muy bien conviviendo contigo. Si bien no tengo un momento exacto en el que supe que me gustabas, me di cuenta de que a veces me hacía falta tu presencia, que me gustaba mucho jugar contigo, que era muy agradable conversar contigo, y que me gustaba estar cerca de ti.
+        <br><br>
+        Ya sabes que para mí el espacio personal es muy importante, pero contigo no me importaba que estuvieras cerca, al contrario, me gustaba que estuvieras allí. Comencé a notar cuando hacía falta tu presencia, tus hábitos, tu forma en la que comías, la forma en la que caminabas y tu carácter en general.
+        <br><br>
+        Ahora que somos pareja, cada día logras que me enamore más y más de ti. Me gusta tu carácter, tu forma de expresarte tan formal, lo inteligente que eres, lo amable que puedes llegar a ser, me gusta tu manera de pensar, me gusta todo lo que te hace ser tú.
+        <br><br>
+        Muchas gracias por estar en mi vida.
+      </p>
+      <p class="letter-signature">— Con todo mi cariño, Mayte &nbsp;🌸</p>
+    </div>
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-dot"></div>
+    <div class="divider-dot" style="background:#f5b8cc;"></div>
+    <div class="divider-dot"></div>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- CANCIONES con borde acuarela -->
+  <div class="card-wrap" id="wrap-songs">
+    <svg class="card-watercolor-border" id="border-songs" preserveAspectRatio="none"></svg>
+    <div class="card-inner songs">
+      <div class="songs-blossom">
+        <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="30" cy="16" r="10" fill="#fbd0e0" opacity="0.9"/>
+          <circle cx="45.6" cy="23" r="10" fill="#f7bcd2" opacity="0.9"/>
+          <circle cx="44.6" cy="40" r="10" fill="#fbd0e0" opacity="0.9"/>
+          <circle cx="30" cy="46" r="10" fill="#f7bcd2" opacity="0.9"/>
+          <circle cx="15.4" cy="40" r="10" fill="#fbd0e0" opacity="0.9"/>
+          <circle cx="14.4" cy="23" r="10" fill="#f7bcd2" opacity="0.9"/>
+          <circle cx="30" cy="30" r="9" fill="#fdeaf2"/>
+          <circle cx="30" cy="30" r="4" fill="#e898b6"/>
+        </svg>
+      </div>
+      <p class="songs-desc">
+        Elegí estas canciones especialmente para ti,<br>
+        porque cada una me recuerda al bonito sentimiento<br>
+        que me haces sentir.
+      </p>
+    </div>
+  </div>
+
+  <!-- SPOTIFY con borde acuarela -->
+  <div class="card-wrap" id="wrap-spotify">
+    <svg class="card-watercolor-border" id="border-spotify" preserveAspectRatio="none"></svg>
+    <div class="card-inner spotify">
+      <div class="spotify-header">
+        <div class="spotify-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="spotify-title">Nuestra playlist</div>
+          <div class="spotify-sub">Hecha con todo mi amor para ti</div>
+        </div>
+      </div>
+      <iframe
+        class="spotify-embed"
+        src="https://open.spotify.com/embed/playlist/1c6uKhbKrctNpY5e2UeZ23?utm_source=generator"
+        width="100%"
+        height="380"
+        frameBorder="0"
+        allowfullscreen=""
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy">
+      </iframe>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p class="footer-text">Feliz primer mes, Ilya</p>
+    <div class="heart-wrap">
+      <svg width="36" height="34" viewBox="0 0 36 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 31 C18 31 3 21 3 11.5 C3 7.4 6.4 4 10.5 4 C13.2 4 15.6 5.4 18 8 C20.4 5.4 22.8 4 25.5 4 C29.6 4 33 7.4 33 11.5 C33 21 18 31 18 31Z" fill="#f7b8cc" stroke="#e898b0" stroke-width="0.8"/>
+        <path d="M12 10 C11 12 11 15 13 17" stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+      </svg>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  /* ── pétalos cayendo ── */
+  const petalContainer = document.getElementById('petals');
+  function createPetal() {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    const size = 14 + Math.random() * 12;
+    svg.setAttribute('width', size);
+    svg.setAttribute('height', size);
+    svg.setAttribute('viewBox','0 0 30 30');
+    svg.style.cssText = `position:absolute;left:${Math.random()*100}vw;top:-30px;opacity:0;animation:sakuraFall ${7+Math.random()*9}s ${Math.random()*14}s linear infinite`;
+    const colors = ['#fbd0e0','#f7bcd2','#fccfdd','#f9c0d5','#fde0ec'];
+    const el = document.createElementNS('http://www.w3.org/2000/svg','ellipse');
+    el.setAttribute('cx','15'); el.setAttribute('cy','15');
+    el.setAttribute('rx','9'); el.setAttribute('ry','13');
+    el.setAttribute('fill', colors[Math.floor(Math.random()*colors.length)]);
+    el.setAttribute('opacity','0.85');
+    svg.style.transform = `rotate(${Math.random()*360}deg)`;
+    svg.appendChild(el);
+    petalContainer.appendChild(svg);
+  }
+  for (let i = 0; i < 30; i++) createPetal();
+
+  /* ── borde acuarela ── */
+  function wobble(base, amp) {
+    return base + (Math.random() - 0.5) * amp;
+  }
+
+  function watercolorPath(W, H, roughness) {
+    const r = roughness;
+    const pts = [
+      [wobble(0,r),       wobble(H*0.1,r)],
+      [wobble(0,r),       wobble(H*0.5,r)],
+      [wobble(0,r),       wobble(H*0.9,r)],
+      [wobble(W*0.1,r),   wobble(H,r)],
+      [wobble(W*0.5,r),   wobble(H,r)],
+      [wobble(W*0.9,r),   wobble(H,r)],
+      [wobble(W,r),       wobble(H*0.9,r)],
+      [wobble(W,r),       wobble(H*0.5,r)],
+      [wobble(W,r),       wobble(H*0.1,r)],
+      [wobble(W*0.9,r),   wobble(0,r)],
+      [wobble(W*0.5,r),   wobble(0,r)],
+      [wobble(W*0.1,r),   wobble(0,r)],
+    ];
+    let d = `M ${pts[0][0]} ${pts[0][1]}`;
+    for (let i = 1; i < pts.length; i++) {
+      const prev = pts[i-1];
+      const curr = pts[i];
+      const cx = wobble((prev[0]+curr[0])/2, r*0.4);
+      const cy = wobble((prev[1]+curr[1])/2, r*0.4);
+      d += ` Q ${cx} ${cy} ${curr[0]} ${curr[1]}`;
+    }
+    d += ' Z';
+    return d;
+  }
+
+  function drawWatercolorBorder(svgEl, W, H, strokeColor, fillColor) {
+    svgEl.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svgEl.innerHTML = '';
+
+    const layers = [
+      { roughness: 14, opacity: 0.18, width: 3.5 },
+      { roughness: 10, opacity: 0.22, width: 2.5 },
+      { roughness:  7, opacity: 0.30, width: 1.8 },
+      { roughness:  5, opacity: 0.55, width: 1.2 },
+    ];
+
+    // fondo suave
+    const bg = document.createElementNS('http://www.w3.org/2000/svg','path');
+    bg.setAttribute('d', watercolorPath(W, H, 8));
+    bg.setAttribute('fill', fillColor);
+    bg.setAttribute('opacity', '0.6');
+    svgEl.appendChild(bg);
+
+    // capas de trazo irregular
+    layers.forEach(l => {
+      const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+      path.setAttribute('d', watercolorPath(W, H, l.roughness));
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke', strokeColor);
+      path.setAttribute('stroke-width', l.width);
+      path.setAttribute('opacity', l.opacity);
+      path.setAttribute('stroke-linecap', 'round');
+      path.setAttribute('stroke-linejoin', 'round');
+      svgEl.appendChild(path);
+    });
+  }
+
+  function initBorders() {
+    const cards = [
+      { wrap: 'wrap-letter',  border: 'border-letter',  stroke: '#d4a0b8', fill: '#fff5f8' },
+      { wrap: 'wrap-songs',   border: 'border-songs',   stroke: '#d4a0b8', fill: '#fff0f5' },
+      { wrap: 'wrap-spotify', border: 'border-spotify', stroke: '#90c8a8', fill: '#f4faf6' },
+    ];
+
+    cards.forEach(({ wrap, border, stroke, fill }) => {
+      const wrapEl   = document.getElementById(wrap);
+      const borderEl = document.getElementById(border);
+      const W = wrapEl.offsetWidth;
+      const H = wrapEl.offsetHeight;
+      drawWatercolorBorder(borderEl, W, H, stroke, fill);
+    });
+  }
+
+  window.addEventListener('load', initBorders);
+  window.addEventListener('resize', initBorders);
+</script>
+</body>
+</html>
