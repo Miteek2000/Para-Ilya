@@ -25,12 +25,6 @@
     overflow: hidden;
   }
 
-  .petal {
-    position: absolute;
-    opacity: 0;
-    animation: sakuraFall linear infinite;
-  }
-
   @keyframes sakuraFall {
     0%   { transform: translateY(-60px) rotate(0deg) translateX(0px); opacity: 0; }
     8%   { opacity: 0.85; }
@@ -241,9 +235,7 @@
     animation: fadeInHint 1.2s 1s forwards;
     letter-spacing: 1px;
   }
-  @keyframes fadeInHint {
-    to { opacity: 1; }
-  }
+  @keyframes fadeInHint { to { opacity: 1; } }
 
   .envelope-wrap {
     cursor: pointer;
@@ -255,16 +247,12 @@
   .envelope-wrap:hover { transform: scale(1.03) translateY(-4px); }
   .envelope-wrap:active { transform: scale(0.98); }
 
-  /* La tapa del sobre se abre hacia arriba */
   #env-flap {
     transform-origin: top center;
     transition: transform 0.7s cubic-bezier(0.4,0,0.2,1);
   }
-  .envelope-wrap.opening #env-flap {
-    transform: rotateX(180deg);
-  }
+  .envelope-wrap.opening #env-flap { transform: rotateX(180deg); }
 
-  /* La cartita sube desde dentro */
   #env-letter-out {
     position: absolute;
     left: 50%;
@@ -278,23 +266,286 @@
     transform: translateX(-50%) translateY(-90px);
     opacity: 1;
   }
+
+  /* ══ MINIJUEGO ══ */
+  #minijuego-section { margin: 0 0 2rem; }
+
+  #game-canvas-wrap {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: crosshair;
+    background: linear-gradient(180deg, #fff5fb 0%, #fde8f2 60%, #fbd0e4 100%);
+    border: 1.5px solid rgba(212,160,184,0.35);
+  }
+  #game-canvas-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 44px;
+    background: linear-gradient(180deg, #d4edba 0%, #b8dda0 100%);
+    border-radius: 0 0 16px 16px;
+    z-index: 0;
+  }
+  #game-hint {
+    position: absolute;
+    bottom: 52px; left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 0.82rem;
+    color: #b07090;
+    white-space: nowrap;
+    z-index: 10;
+    pointer-events: none;
+    transition: opacity 0.4s;
+  }
+  #mimikyu {
+    position: absolute;
+    width: 72px; height: 72px;
+    bottom: 44px; left: 60px;
+    z-index: 5;
+    cursor: pointer;
+    filter: drop-shadow(0 4px 8px rgba(100,50,80,0.18));
+  }
+  #mimikyu.scared { animation: mimiScared 0.3s ease; }
+  @keyframes mimiScared {
+    0%,100% { transform: scaleX(1) translateY(0); }
+    50%     { transform: scaleX(1) translateY(-8px); }
+  }
+  .pokeball-throw {
+    position: absolute;
+    width: 36px; height: 36px;
+    z-index: 8;
+    pointer-events: none;
+    animation: throwBall 0.55s cubic-bezier(0.2,0.8,0.5,1) forwards;
+  }
+  @keyframes throwBall {
+    0%   { transform: scale(0.6) rotate(0deg);   opacity: 1; }
+    60%  { transform: scale(1.1) rotate(260deg);  opacity: 1; }
+    100% { transform: scale(0.9) rotate(360deg);  opacity: 1; }
+  }
+  .pokeball-shake {
+    position: absolute;
+    width: 40px; height: 40px;
+    z-index: 9;
+    animation: shakeCapture 1s ease forwards;
+  }
+  @keyframes shakeCapture {
+    0%,100% { transform: rotate(0deg); }
+    15%  { transform: rotate(-18deg); }
+    30%  { transform: rotate(16deg); }
+    45%  { transform: rotate(-12deg); }
+    60%  { transform: rotate(10deg); }
+    75%  { transform: rotate(-6deg); }
+    90%  { transform: rotate(4deg); }
+  }
+  #game-result {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(253,240,248,0.93);
+    border-radius: 18px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    padding: 1.5rem;
+    text-align: center;
+  }
+  #game-result.visible { opacity: 1; visibility: visible; }
+  #game-result .result-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; color: #8b4a6b; margin-bottom: 0.4rem;
+  }
+  #game-result .result-sub {
+    font-family: 'Playfair Display', serif;
+    font-style: italic; font-size: 0.9rem; color: #c48aaa; margin-bottom: 1.2rem;
+  }
+  #game-result .result-chars {
+    display: flex; align-items: flex-end; justify-content: center;
+    gap: 0.5rem; margin-bottom: 1rem;
+    animation: resultBounce 0.6s 0.2s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @keyframes resultBounce {
+    from { transform: scale(0.4); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+  }
+  #btn-replay {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: 0.85rem; color: #b07090;
+    background: none; border: 1px solid #e8b4cc;
+    border-radius: 20px; padding: 0.45rem 1.2rem;
+    cursor: pointer; transition: background 0.2s, color 0.2s;
+  }
+  #btn-replay:hover { background: #f5d0e0; color: #7a3558; }
+  .float-heart {
+    position: absolute; font-size: 1.2rem;
+    pointer-events: none; z-index: 25;
+    animation: floatUp 1.4s ease forwards;
+  }
+  @keyframes floatUp {
+    0%   { transform: translateY(0) scale(0.6); opacity: 1; }
+    100% { transform: translateY(-120px) scale(1.1); opacity: 0; }
+  }
+
+  /* ══ SEPARADOR DE MES ══ */
+  .mes-separador {
+    text-align: center;
+    margin: 4rem 0 3rem;
+    position: relative;
+  }
+  .mes-separador-linea {
+    position: absolute;
+    top: 50%;
+    left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #e8b4cc 20%, #e8b4cc 80%, transparent);
+  }
+  .mes-separador-badge {
+    position: relative;
+    display: inline-block;
+    background: #fdf6f9;
+    padding: 0 1.4rem;
+  }
+  .mes-separador-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.72rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #c48aaa;
+  }
+
+  /* ══ GALERÍA DE FOTOS ══ */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1.2rem;
+  }
+  .gallery-grid .foto-grande {
+    grid-column: 1 / -1;
+  }
+
+  .foto-item {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .foto-item.foto-grande { aspect-ratio: 16/9; }
+
+  .foto-item:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 28px rgba(180,100,140,0.22);
+  }
+
+  .foto-item img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: filter 0.3s ease;
+  }
+
+  /* Borde acuarela en fotos */
+  .foto-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    border: 2px solid rgba(212,160,184,0.45);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* Overlay con fecha/caption al hover */
+  .foto-caption {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(91,35,60,0.72), transparent);
+    color: #fde8f2;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    padding: 1rem 0.9rem 0.7rem;
+    transform: translateY(8px);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 3;
+    pointer-events: none;
+  }
+  .foto-item:hover .foto-caption {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Pétalos decorativos flotando sobre la galería */
+  .foto-petal {
+    position: absolute;
+    pointer-events: none;
+    z-index: 4;
+    opacity: 0.55;
+  }
+
+  /* Lightbox */
+  #lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(40,10,28,0.88);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+    cursor: zoom-out;
+  }
+  #lightbox.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+  #lightbox img {
+    max-width: 92vw;
+    max-height: 88vh;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    object-fit: contain;
+    transform: scale(0.92);
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  #lightbox.visible img { transform: scale(1); }
+  #lightbox-close {
+    position: absolute;
+    top: 1.2rem; right: 1.4rem;
+    color: rgba(255,220,235,0.85);
+    font-size: 2rem;
+    cursor: pointer;
+    line-height: 1;
+    font-family: 'Playfair Display', serif;
+    transition: opacity 0.2s;
+  }
+  #lightbox-close:hover { opacity: 0.6; }
 </style>
 </head>
 <body>
 
 <!-- ══ PANTALLA DE SOBRE ══ -->
 <div id="envelope-screen">
-
-  <!-- Pétalos decorativos también en el sobre -->
   <div class="petals-bg" id="petals-env" style="z-index:0;"></div>
 
-  <!-- Rama cerezo pequeña arriba -->
   <svg width="320" height="80" viewBox="0 0 420 130" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.7;margin-bottom:-10px;pointer-events:none;">
     <path d="M30 110 Q120 80 200 70 Q290 58 390 40" stroke="#c8967a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
     <path d="M100 87 Q110 60 130 45" stroke="#c8967a" stroke-width="1.5" stroke-linecap="round" fill="none"/>
     <path d="M160 76 Q165 50 180 30" stroke="#c8967a" stroke-width="1.5" stroke-linecap="round" fill="none"/>
     <path d="M240 67 Q248 42 265 22" stroke="#c8967a" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-    <!-- flores -->
     <g transform="translate(130,42)">
       <circle cx="0" cy="-5.5" r="4" fill="#fccfdd" opacity="0.9"/>
       <circle cx="5.2" cy="-1.7" r="4" fill="#f8bbce" opacity="0.9"/>
@@ -326,18 +577,13 @@
     <ellipse cx="155" cy="58" rx="3" ry="5" fill="#fcccda" transform="rotate(-10,155,58)" opacity="0.75"/>
   </svg>
 
-  <!-- El sobre en sí -->
   <div class="envelope-wrap" id="envelope" onclick="openEnvelope()">
-
-    <!-- Mini cartita que asoma al abrir -->
     <div id="env-letter-out">
       <svg width="120" height="70" viewBox="0 0 120 70" fill="none">
         <rect x="4" y="4" width="112" height="62" rx="8" fill="#fff5f8" stroke="#e8b4cc" stroke-width="1.5"/>
-        <!-- líneas de texto simuladas -->
         <line x1="20" y1="22" x2="100" y2="22" stroke="#e8c4d4" stroke-width="1.5" stroke-linecap="round"/>
         <line x1="20" y1="32" x2="95" y2="32" stroke="#e8c4d4" stroke-width="1.5" stroke-linecap="round"/>
         <line x1="20" y1="42" x2="88" y2="42" stroke="#e8c4d4" stroke-width="1.5" stroke-linecap="round"/>
-        <!-- florecita -->
         <g transform="translate(60,57)">
           <circle cx="0" cy="-4" r="3" fill="#fccfdd" opacity="0.9"/>
           <circle cx="3.8" cy="-1.2" r="3" fill="#f8bbce" opacity="0.9"/>
@@ -350,28 +596,15 @@
       </svg>
     </div>
 
-    <!-- SVG del sobre completo -->
     <svg id="envelope-svg" width="300" height="220" viewBox="0 0 300 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- sombra suave -->
       <ellipse cx="150" cy="215" rx="100" ry="8" fill="#d4a0b8" opacity="0.15"/>
-
-      <!-- Cuerpo del sobre — acuarela irregular -->
-      <!-- capas fondo acuarela -->
       <path d="M 18 48 Q 14 110 16 175 Q 18 198 40 205 Q 150 212 260 205 Q 282 200 284 175 Q 286 110 282 48 Q 280 30 262 28 Q 150 22 38 28 Q 20 30 18 48 Z" fill="#fff0f5" opacity="0.9"/>
       <path d="M 16 50 Q 11 112 14 177 Q 17 202 38 208 Q 150 215 262 208 Q 283 203 286 177 Q 289 112 284 50 Q 281 28 260 26 Q 150 20 40 26 Q 19 28 16 50 Z" fill="none" stroke="#d4a0b8" stroke-width="2.2" opacity="0.5" stroke-linecap="round"/>
-      <path d="M 18 48 Q 13 110 15 176 Q 18 200 39 207 Q 150 214 261 207 Q 282 201 285 176 Q 288 110 283 48 Q 280 26 261 24 Q 150 18 39 24 Q 20 26 18 48 Z" fill="none" stroke="#d4a0b8" stroke-width="1.2" opacity="0.3" stroke-linecap="round"/>
-
-      <!-- Triángulos laterales del interior del sobre (decoración) -->
       <path d="M 18 48 L 150 130 L 282 48" fill="none" stroke="#e8b4cc" stroke-width="1" opacity="0.5"/>
       <path d="M 18 200 L 110 140" fill="none" stroke="#e8b4cc" stroke-width="0.8" opacity="0.4"/>
       <path d="M 282 200 L 190 140" fill="none" stroke="#e8b4cc" stroke-width="0.8" opacity="0.4"/>
-
-      <!-- Triángulo inferior del sobre -->
       <path d="M 18 200 Q 150 215 282 200 L 150 128 Z" fill="#fde0ec" opacity="0.5"/>
       <path d="M 18 200 Q 150 215 282 200 L 150 128 Z" fill="none" stroke="#d4a0b8" stroke-width="1" opacity="0.4"/>
-
-      <!-- Flores de cerezo decorando el sobre -->
-      <!-- flor izquierda -->
       <g transform="translate(60,160)">
         <circle cx="0" cy="-7" r="5.5" fill="#fccfdd" opacity="0.8"/>
         <circle cx="6.6" cy="-2.2" r="5.5" fill="#f8bbce" opacity="0.8"/>
@@ -381,7 +614,6 @@
         <circle cx="0" cy="0" r="3.8" fill="#fdeaf2"/>
         <circle cx="0" cy="0" r="1.8" fill="#e898b6"/>
       </g>
-      <!-- flor derecha -->
       <g transform="translate(240,155)">
         <circle cx="0" cy="-6" r="5" fill="#fccfdd" opacity="0.8"/>
         <circle cx="5.7" cy="-1.9" r="5" fill="#f8bbce" opacity="0.8"/>
@@ -391,20 +623,12 @@
         <circle cx="0" cy="0" r="3.4" fill="#fdeaf2"/>
         <circle cx="0" cy="0" r="1.6" fill="#e898b6"/>
       </g>
-      <!-- pétalos sueltos -->
       <ellipse cx="100" cy="175" rx="4" ry="6.5" fill="#f9b8ce" transform="rotate(20,100,175)" opacity="0.6"/>
       <ellipse cx="195" cy="170" rx="3.5" ry="5.5" fill="#fcccda" transform="rotate(-15,195,170)" opacity="0.6"/>
       <ellipse cx="150" cy="185" rx="3" ry="5" fill="#f9b8ce" transform="rotate(5,150,185)" opacity="0.5"/>
-
-      <!-- TAPA del sobre — se dobla hacia arriba al abrir -->
       <g id="env-flap" style="perspective: 600px;">
-        <!-- fondo de la tapa -->
         <path d="M 18 48 Q 20 46 38 26 Q 150 18 262 26 Q 280 28 282 48 L 150 130 Z" fill="#fde8f0" opacity="0.95"/>
-        <!-- borde acuarela tapa -->
         <path d="M 17 49 Q 19 45 37 25 Q 150 17 263 25 Q 281 27 283 49 L 150 132 Z" fill="none" stroke="#d4a0b8" stroke-width="2" opacity="0.55" stroke-linecap="round"/>
-        <path d="M 19 47 Q 21 44 39 24 Q 150 19 261 24 Q 279 26 281 47 L 150 128 Z" fill="none" stroke="#d4a0b8" stroke-width="1" opacity="0.3" stroke-linecap="round"/>
-
-        <!-- Flores en la tapa -->
         <g transform="translate(150,62)">
           <circle cx="0" cy="-8" r="6" fill="#fccfdd" opacity="0.85"/>
           <circle cx="7.6" cy="-2.5" r="6" fill="#f8bbce" opacity="0.85"/>
@@ -414,7 +638,6 @@
           <circle cx="0" cy="0" r="4.2" fill="#fdeaf2"/>
           <circle cx="0" cy="0" r="2" fill="#e898b6"/>
         </g>
-        <!-- florecitas pequeñas tapa -->
         <g transform="translate(100,75)">
           <circle cx="0" cy="-5" r="4" fill="#fccfdd" opacity="0.75"/>
           <circle cx="4.8" cy="-1.5" r="4" fill="#f8bbce" opacity="0.75"/>
@@ -433,8 +656,6 @@
           <circle cx="0" cy="0" r="2.7" fill="#fdeaf2"/>
           <circle cx="0" cy="0" r="1.2" fill="#e898b6"/>
         </g>
-
-        <!-- Sello decorativo: corazón -->
         <circle cx="150" cy="105" r="12" fill="#f7b8cc" opacity="0.55" stroke="#d4a0b8" stroke-width="1"/>
         <path d="M150 111 C150 111 142 106 142 101.5 C142 99.5 143.8 98 146 98 C147.5 98 148.8 98.8 150 100 C151.2 98.8 152.5 98 154 98 C156.2 98 158 99.5 158 101.5 C158 106 150 111 150 111Z" fill="#e898b0" opacity="0.85"/>
       </g>
@@ -444,12 +665,17 @@
   <p class="envelope-hint">✦ &nbsp; toca para abrir &nbsp; ✦</p>
 </div>
 
-<!-- ════════════════════════════════ -->
+<!-- Lightbox -->
+<div id="lightbox" onclick="cerrarLightbox()">
+  <span id="lightbox-close">✕</span>
+  <img id="lightbox-img" src="" alt="">
+</div>
 
 <div class="petals-bg" id="petals"></div>
 
 <div class="page">
 
+  <!-- ══ PRIMER MES ══ -->
   <div class="branch-wrap">
     <svg width="420" height="130" viewBox="0 0 420 130" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M30 110 Q120 80 200 70 Q290 58 390 40" stroke="#c8967a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
@@ -459,49 +685,34 @@
       <path d="M310 55 Q318 35 328 18" stroke="#c8967a" stroke-width="1.5" stroke-linecap="round" fill="none"/>
       <path d="M200 70 Q195 45 205 25" stroke="#c8967a" stroke-width="1.2" stroke-linecap="round" fill="none"/>
       <g transform="translate(128,38)">
-        <circle cx="0" cy="-7" r="4.5" fill="#f9ccd8" opacity="0.9"/>
-        <circle cx="6.6" cy="-2.2" r="4.5" fill="#f5b8cc" opacity="0.9"/>
-        <circle cx="4.1" cy="5.8" r="4.5" fill="#f9ccd8" opacity="0.9"/>
-        <circle cx="-4.1" cy="5.8" r="4.5" fill="#f5b8cc" opacity="0.9"/>
+        <circle cx="0" cy="-7" r="4.5" fill="#f9ccd8" opacity="0.9"/><circle cx="6.6" cy="-2.2" r="4.5" fill="#f5b8cc" opacity="0.9"/>
+        <circle cx="4.1" cy="5.8" r="4.5" fill="#f9ccd8" opacity="0.9"/><circle cx="-4.1" cy="5.8" r="4.5" fill="#f5b8cc" opacity="0.9"/>
         <circle cx="-6.6" cy="-2.2" r="4.5" fill="#f9ccd8" opacity="0.9"/>
-        <circle cx="0" cy="0" r="3" fill="#fde8f0"/>
-        <circle cx="0" cy="0" r="1.5" fill="#e89ab8"/>
+        <circle cx="0" cy="0" r="3" fill="#fde8f0"/><circle cx="0" cy="0" r="1.5" fill="#e89ab8"/>
       </g>
       <g transform="translate(178,22)">
-        <circle cx="0" cy="-6.5" r="4" fill="#fbd0e0" opacity="0.9"/>
-        <circle cx="6.2" cy="-2" r="4" fill="#f7bcd2" opacity="0.9"/>
-        <circle cx="3.8" cy="5.4" r="4" fill="#fbd0e0" opacity="0.9"/>
-        <circle cx="-3.8" cy="5.4" r="4" fill="#f7bcd2" opacity="0.9"/>
+        <circle cx="0" cy="-6.5" r="4" fill="#fbd0e0" opacity="0.9"/><circle cx="6.2" cy="-2" r="4" fill="#f7bcd2" opacity="0.9"/>
+        <circle cx="3.8" cy="5.4" r="4" fill="#fbd0e0" opacity="0.9"/><circle cx="-3.8" cy="5.4" r="4" fill="#f7bcd2" opacity="0.9"/>
         <circle cx="-6.2" cy="-2" r="4" fill="#fbd0e0" opacity="0.9"/>
-        <circle cx="0" cy="0" r="2.8" fill="#fdeaf2"/>
-        <circle cx="0" cy="0" r="1.3" fill="#e898b6"/>
+        <circle cx="0" cy="0" r="2.8" fill="#fdeaf2"/><circle cx="0" cy="0" r="1.3" fill="#e898b6"/>
       </g>
       <g transform="translate(263,15)">
-        <circle cx="0" cy="-7" r="4.5" fill="#f9ccd8" opacity="0.95"/>
-        <circle cx="6.6" cy="-2.2" r="4.5" fill="#f5b8cc" opacity="0.95"/>
-        <circle cx="4.1" cy="5.8" r="4.5" fill="#f9ccd8" opacity="0.95"/>
-        <circle cx="-4.1" cy="5.8" r="4.5" fill="#f5b8cc" opacity="0.95"/>
+        <circle cx="0" cy="-7" r="4.5" fill="#f9ccd8" opacity="0.95"/><circle cx="6.6" cy="-2.2" r="4.5" fill="#f5b8cc" opacity="0.95"/>
+        <circle cx="4.1" cy="5.8" r="4.5" fill="#f9ccd8" opacity="0.95"/><circle cx="-4.1" cy="5.8" r="4.5" fill="#f5b8cc" opacity="0.95"/>
         <circle cx="-6.6" cy="-2.2" r="4.5" fill="#f9ccd8" opacity="0.95"/>
-        <circle cx="0" cy="0" r="3" fill="#fde8f0"/>
-        <circle cx="0" cy="0" r="1.5" fill="#e89ab8"/>
+        <circle cx="0" cy="0" r="3" fill="#fde8f0"/><circle cx="0" cy="0" r="1.5" fill="#e89ab8"/>
       </g>
       <g transform="translate(326,12)">
-        <circle cx="0" cy="-6" r="4" fill="#fbd4e2" opacity="0.9"/>
-        <circle cx="5.7" cy="-1.9" r="4" fill="#f7c0d4" opacity="0.9"/>
-        <circle cx="3.5" cy="5" r="4" fill="#fbd4e2" opacity="0.9"/>
-        <circle cx="-3.5" cy="5" r="4" fill="#f7c0d4" opacity="0.9"/>
+        <circle cx="0" cy="-6" r="4" fill="#fbd4e2" opacity="0.9"/><circle cx="5.7" cy="-1.9" r="4" fill="#f7c0d4" opacity="0.9"/>
+        <circle cx="3.5" cy="5" r="4" fill="#fbd4e2" opacity="0.9"/><circle cx="-3.5" cy="5" r="4" fill="#f7c0d4" opacity="0.9"/>
         <circle cx="-5.7" cy="-1.9" r="4" fill="#fbd4e2" opacity="0.9"/>
-        <circle cx="0" cy="0" r="2.6" fill="#fdeaf2"/>
-        <circle cx="0" cy="0" r="1.2" fill="#e898b6"/>
+        <circle cx="0" cy="0" r="2.6" fill="#fdeaf2"/><circle cx="0" cy="0" r="1.2" fill="#e898b6"/>
       </g>
       <g transform="translate(200,18)">
-        <circle cx="0" cy="-5.5" r="3.5" fill="#fccfdd" opacity="0.85"/>
-        <circle cx="5.2" cy="-1.7" r="3.5" fill="#f8bbce" opacity="0.85"/>
-        <circle cx="3.2" cy="4.6" r="3.5" fill="#fccfdd" opacity="0.85"/>
-        <circle cx="-3.2" cy="4.6" r="3.5" fill="#f8bbce" opacity="0.85"/>
+        <circle cx="0" cy="-5.5" r="3.5" fill="#fccfdd" opacity="0.85"/><circle cx="5.2" cy="-1.7" r="3.5" fill="#f8bbce" opacity="0.85"/>
+        <circle cx="3.2" cy="4.6" r="3.5" fill="#fccfdd" opacity="0.85"/><circle cx="-3.2" cy="4.6" r="3.5" fill="#f8bbce" opacity="0.85"/>
         <circle cx="-5.2" cy="-1.7" r="3.5" fill="#fccfdd" opacity="0.85"/>
-        <circle cx="0" cy="0" r="2.4" fill="#fdeaf2"/>
-        <circle cx="0" cy="0" r="1.1" fill="#e898b6"/>
+        <circle cx="0" cy="0" r="2.4" fill="#fdeaf2"/><circle cx="0" cy="0" r="1.1" fill="#e898b6"/>
       </g>
       <ellipse cx="95" cy="72" rx="4" ry="6" fill="#f9b8ce" transform="rotate(-20,95,72)" opacity="0.8"/>
       <ellipse cx="350" cy="36" rx="3.5" ry="5" fill="#f9b8ce" transform="rotate(15,350,36)" opacity="0.8"/>
@@ -515,14 +726,11 @@
   </div>
 
   <div class="divider">
-    <div class="divider-line"></div>
-    <div class="divider-dot"></div>
+    <div class="divider-line"></div><div class="divider-dot"></div>
     <div class="divider-dot" style="background:#f5b8cc;"></div>
-    <div class="divider-dot"></div>
-    <div class="divider-line"></div>
+    <div class="divider-dot"></div><div class="divider-line"></div>
   </div>
 
-  <!-- CARTA con borde acuarela -->
   <div class="card-wrap" id="wrap-letter">
     <svg class="card-watercolor-border" id="border-letter" preserveAspectRatio="none"></svg>
     <div class="card-inner letter card-letter">
@@ -541,14 +749,11 @@
   </div>
 
   <div class="divider">
-    <div class="divider-line"></div>
-    <div class="divider-dot"></div>
+    <div class="divider-line"></div><div class="divider-dot"></div>
     <div class="divider-dot" style="background:#f5b8cc;"></div>
-    <div class="divider-dot"></div>
-    <div class="divider-line"></div>
+    <div class="divider-dot"></div><div class="divider-line"></div>
   </div>
 
-  <!-- CANCIONES con borde acuarela -->
   <div class="card-wrap" id="wrap-songs">
     <svg class="card-watercolor-border" id="border-songs" preserveAspectRatio="none"></svg>
     <div class="card-inner songs">
@@ -572,7 +777,6 @@
     </div>
   </div>
 
-  <!-- SPOTIFY con borde acuarela -->
   <div class="card-wrap" id="wrap-spotify">
     <svg class="card-watercolor-border" id="border-spotify" preserveAspectRatio="none"></svg>
     <div class="card-inner spotify">
@@ -587,21 +791,160 @@
           <div class="spotify-sub">Hecha con todo mi amor para ti</div>
         </div>
       </div>
-      <iframe
-        class="spotify-embed"
+      <iframe class="spotify-embed"
         src="https://open.spotify.com/embed/playlist/1c6uKhbKrctNpY5e2UeZ23?utm_source=generator"
-        width="100%"
-        height="380"
-        frameBorder="0"
-        allowfullscreen=""
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        loading="lazy">
+        width="100%" height="380" frameBorder="0" allowfullscreen=""
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy">
       </iframe>
     </div>
   </div>
 
+  <!-- ══ SEPARADOR → SEGUNDO MES ══ -->
+  <div class="mes-separador">
+    <div class="mes-separador-linea"></div>
+    <div class="mes-separador-badge">
+      <svg width="200" height="54" viewBox="0 0 200 54" fill="none" style="display:block;">
+        <!-- Flores laterales -->
+        <g transform="translate(18,27)">
+          <circle cx="0" cy="-5" r="4" fill="#fccfdd" opacity="0.85"/>
+          <circle cx="4.8" cy="-1.5" r="4" fill="#f8bbce" opacity="0.85"/>
+          <circle cx="3" cy="4" r="4" fill="#fccfdd" opacity="0.85"/>
+          <circle cx="-3" cy="4" r="4" fill="#f8bbce" opacity="0.85"/>
+          <circle cx="-4.8" cy="-1.5" r="4" fill="#fccfdd" opacity="0.85"/>
+          <circle cx="0" cy="0" r="2.7" fill="#fdeaf2"/>
+          <circle cx="0" cy="0" r="1.2" fill="#e898b6"/>
+        </g>
+        <g transform="translate(182,27)">
+          <circle cx="0" cy="-5" r="4" fill="#fccfdd" opacity="0.85"/>
+          <circle cx="4.8" cy="-1.5" r="4" fill="#f8bbce" opacity="0.85"/>
+          <circle cx="3" cy="4" r="4" fill="#fccfdd" opacity="0.85"/>
+          <circle cx="-3" cy="4" r="4" fill="#f8bbce" opacity="0.85"/>
+          <circle cx="-4.8" cy="-1.5" r="4" fill="#fccfdd" opacity="0.85"/>
+          <circle cx="0" cy="0" r="2.7" fill="#fdeaf2"/>
+          <circle cx="0" cy="0" r="1.2" fill="#e898b6"/>
+        </g>
+        <text x="100" y="22" text-anchor="middle" font-family="'Playfair Display', serif" font-size="9" letter-spacing="4" fill="#c48aaa" text-transform="uppercase">✦  DOS MESES  ✦</text>
+        <text x="100" y="40" text-anchor="middle" font-family="'Playfair Display', serif" font-style="italic" font-size="11" fill="#b07090">juntos</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ══ CARTA SEGUNDO MES ══ -->
+  <div class="card-wrap" id="wrap-carta2">
+    <svg class="card-watercolor-border" id="border-carta2" preserveAspectRatio="none"></svg>
+    <div class="card-inner letter card-letter">
+      <div class="card-label">✦ &nbsp; con todo mi corazón</div>
+      <p class="letter-text">
+        No creas que se me olvidó que hoy cumplimos dos meses. Así como hoy estamos celebrando estos dos meses juntos, sé que próximamente cumpliremos muchos, muchos más.
+        <br><br>
+        ¿Sabías que eres el amor de mi vida? Y que aprecio cada momento que paso junto a ti. No importa si estamos jugando, platicando por llamada o pasando tiempo en persona, todos esos momentos son hermosos y especiales para mí.
+        <br><br>
+        Siempre recuerda que ocupas un lugar muy importante en mi corazón y en mi mente. Me encanta todo de ti, tu forma de ser, tu compañía y cada detalle que te hace ser tú.
+        <br><br>
+        Gracias por estos dos meses tan bonitos. Te amo y espero seguir creando muchos más recuerdos a tu lado.
+      </p>
+      <p class="letter-signature">— Con todo mi amor, Mayte &nbsp;🌸</p>
+    </div>
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div><div class="divider-dot"></div>
+    <div class="divider-dot" style="background:#f5b8cc;"></div>
+    <div class="divider-dot"></div><div class="divider-line"></div>
+  </div>
+
+  <!-- ══ GALERÍA DE FOTOS ══ -->
+<div class="card-wrap" id="wrap-galeria">
+    <svg class="card-watercolor-border" id="border-galeria" preserveAspectRatio="none"></svg>
+    <div class="card-inner letter" style="background:rgba(255,250,252,0.92);">
+      <div class="card-label">✦ &nbsp; nuestros momentos</div>
+
+      <div class="gallery-grid">
+
+        <!-- Foto grande (primera foto — la de los dos en el cine) -->
+        <div class="foto-item foto-grande" onclick="abrirLightbox(this)">
+          <img src="assets/fotos/foto1.jpeg" alt="Nosotros" loading="lazy">
+          <div class="foto-caption">cita en en el cine 🌸</div>
+        </div>
+
+        <!-- Foto 2 — jugando -->
+        <div class="foto-item" onclick="abrirLightbox(this)">
+          <img src="assets/fotos/foto2.jpeg" alt="Jugando juntos" loading="lazy">
+          <div class="foto-caption">te miras muy bonito</div>
+        </div>
+
+        <!-- Foto 3 — segundo mes -->
+        <div class="foto-item" onclick="abrirLightbox(this)">
+          <img src="assets/fotos/foto3.jpeg" alt="Segundo mes" loading="lazy">
+          <div class="foto-caption">te gane ese dia jugando</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div><div class="divider-dot"></div>
+    <div class="divider-dot" style="background:#f5b8cc;"></div>
+    <div class="divider-dot"></div><div class="divider-line"></div>
+  </div>
+
+  <!-- ══ MINIJUEGO ══ -->
+  <div id="minijuego-section">
+    <div class="card-wrap" id="wrap-game">
+      <svg class="card-watercolor-border" id="border-game" preserveAspectRatio="none"></svg>
+      <div class="card-inner letter" style="background:rgba(255,250,252,0.92);">
+        <div class="card-label">✦ &nbsp; sorpresa</div>
+        <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:0.9rem;color:#7a4a60;margin-bottom:1.2rem;line-height:1.7;">
+          No manches un Mimikyu… ¡toca para lanzar una pokéball!
+        </p>
+
+        <div id="game-canvas-wrap">
+
+          <!-- Nubes decorativas -->
+          <svg style="position:absolute;top:18px;left:0;width:100%;z-index:1;pointer-events:none;" height="50" viewBox="0 0 400 50" fill="none">
+            <ellipse cx="60"  cy="28" rx="38" ry="16" fill="white" opacity="0.55"/>
+            <ellipse cx="82"  cy="22" rx="28" ry="14" fill="white" opacity="0.5"/>
+            <ellipse cx="40"  cy="24" rx="22" ry="12" fill="white" opacity="0.45"/>
+            <ellipse cx="280" cy="30" rx="44" ry="17" fill="white" opacity="0.5"/>
+            <ellipse cx="305" cy="22" rx="30" ry="14" fill="white" opacity="0.45"/>
+            <ellipse cx="258" cy="26" rx="24" ry="12" fill="white" opacity="0.4"/>
+          </svg>
+
+          <!-- Flores cerezo decorativas en el fondo -->
+          <svg style="position:absolute;bottom:44px;right:16px;z-index:1;pointer-events:none;opacity:0.35;" width="60" height="60" viewBox="0 0 60 60" fill="none">
+            <circle cx="30" cy="16" r="10" fill="#fbd0e0"/>
+            <circle cx="45.6" cy="23" r="10" fill="#f7bcd2"/>
+            <circle cx="44.6" cy="40" r="10" fill="#fbd0e0"/>
+            <circle cx="30" cy="46" r="10" fill="#f7bcd2"/>
+            <circle cx="15.4" cy="40" r="10" fill="#fbd0e0"/>
+            <circle cx="14.4" cy="23" r="10" fill="#f7bcd2"/>
+            <circle cx="30" cy="30" r="9" fill="#fdeaf2"/>
+            <circle cx="30" cy="30" r="4" fill="#e898b6"/>
+          </svg>
+
+          <!-- Mimikyu SVG -->
+          <img id="mimikyu" src="assets/fotos/mimikyu.png" style="position:absolute;width:100px;height:100px;bottom:44px;left:60px;z-index:5;cursor:pointer;filter:drop-shadow(0 4px 8px rgba(100,50,80,0.18));">
+
+          <!-- Hint texto -->
+          <div id="game-hint">✦ toca la pantalla para lanzar ✦</div>
+
+          <!-- Overlay resultado -->
+          <div id="game-result">
+            <div class="result-chars" id="result-chars"></div>
+            <p class="result-title" id="result-title">¡Atrapado con mucho amor!</p>
+            <p class="result-sub" id="result-sub">Eres brutalmente capturado 🌸</p>
+            <button id="btn-replay" onclick="resetGame()">✦ jugar de nuevo ✦</button>
+          </div>
+
+        </div><!-- /canvas-wrap -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ FOOTER ══ -->
   <div class="footer">
-    <p class="footer-text">Feliz primer mes, Ilya</p>
+    <p class="footer-text">Feliz segundo mes, amor</p>
     <div class="heart-wrap">
       <svg width="36" height="34" viewBox="0 0 36 34" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M18 31 C18 31 3 21 3 11.5 C3 7.4 6.4 4 10.5 4 C13.2 4 15.6 5.4 18 8 C20.4 5.4 22.8 4 25.5 4 C29.6 4 33 7.4 33 11.5 C33 21 18 31 18 31Z" fill="#f7b8cc" stroke="#e898b0" stroke-width="0.8"/>
@@ -610,39 +953,47 @@
     </div>
   </div>
 
-</div>
+</div><!-- /page -->
 
 <script>
-  /* ══ SOBRE: abrir ══ */
+  /* ══ SOBRE ══ */
   function openEnvelope() {
     const env = document.getElementById('envelope');
     const screen = document.getElementById('envelope-screen');
     if (env.classList.contains('opening')) return;
     env.classList.add('opening');
-    // Después de la animación, ocultar pantalla y mostrar contenido
     setTimeout(() => {
       screen.classList.add('hidden');
       document.body.style.overflow = '';
     }, 1300);
   }
 
-  // Bloquear scroll mientras el sobre está visible
   document.body.style.overflow = 'hidden';
   document.getElementById('envelope-screen').addEventListener('transitionend', function(e) {
-    if (e.target === this && this.classList.contains('hidden')) {
-      this.style.display = 'none';
-    }
+    if (e.target === this && this.classList.contains('hidden')) this.style.display = 'none';
   });
 
-  /* ── pétalos en pantalla sobre ── */
+  /* ══ LIGHTBOX ══ */
+  function abrirLightbox(el) {
+    const src = el.querySelector('img').src;
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.add('visible');
+    document.body.style.overflow = 'hidden';
+  }
+  function cerrarLightbox() {
+    document.getElementById('lightbox').classList.remove('visible');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarLightbox(); });
+
+  /* ── pétalos sobre ── */
   (function seedEnvPetals() {
     const c = document.getElementById('petals-env');
     if (!c) return;
     for (let i = 0; i < 18; i++) {
       const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
       const size = 10 + Math.random() * 10;
-      svg.setAttribute('width', size);
-      svg.setAttribute('height', size);
+      svg.setAttribute('width', size); svg.setAttribute('height', size);
       svg.setAttribute('viewBox','0 0 30 30');
       svg.style.cssText = `position:absolute;left:${Math.random()*100}vw;top:-30px;opacity:0;animation:sakuraFall ${8+Math.random()*10}s ${Math.random()*12}s linear infinite`;
       const colors = ['#fbd0e0','#f7bcd2','#fccfdd','#f9c0d5','#fde0ec'];
@@ -651,18 +1002,16 @@
       el.setAttribute('rx','9'); el.setAttribute('ry','13');
       el.setAttribute('fill', colors[Math.floor(Math.random()*colors.length)]);
       el.setAttribute('opacity','0.85');
-      svg.appendChild(el);
-      c.appendChild(svg);
+      svg.appendChild(el); c.appendChild(svg);
     }
   })();
 
-  /* ── pétalos cayendo ── */
+  /* ── pétalos página ── */
   const petalContainer = document.getElementById('petals');
   function createPetal() {
     const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
     const size = 14 + Math.random() * 12;
-    svg.setAttribute('width', size);
-    svg.setAttribute('height', size);
+    svg.setAttribute('width', size); svg.setAttribute('height', size);
     svg.setAttribute('viewBox','0 0 30 30');
     svg.style.cssText = `position:absolute;left:${Math.random()*100}vw;top:-30px;opacity:0;animation:sakuraFall ${7+Math.random()*9}s ${Math.random()*14}s linear infinite`;
     const colors = ['#fbd0e0','#f7bcd2','#fccfdd','#f9c0d5','#fde0ec'];
@@ -672,63 +1021,192 @@
     el.setAttribute('fill', colors[Math.floor(Math.random()*colors.length)]);
     el.setAttribute('opacity','0.85');
     svg.style.transform = `rotate(${Math.random()*360}deg)`;
-    svg.appendChild(el);
-    petalContainer.appendChild(svg);
+    svg.appendChild(el); petalContainer.appendChild(svg);
   }
   for (let i = 0; i < 30; i++) createPetal();
 
-  /* ── borde acuarela ── */
-  function wobble(base, amp) {
-    return base + (Math.random() - 0.5) * amp;
-  }
+  /* ══ MINIJUEGO MIMIKYU ══ */
+  (function initGame() {
+    const wrap     = document.getElementById('game-canvas-wrap');
+    const mimi     = document.getElementById('mimikyu');
+    const hint     = document.getElementById('game-hint');
+    const result   = document.getElementById('game-result');
+    if (!wrap || !mimi) return;
+
+    let mimiX = 60, mimiDir = 1, mimiSpeed = 1.4;
+    let escaping = false, caught = false, gameRunning = true;
+    let raf;
+
+    /* Mover a Mimikyu continuamente */
+    function gameLoop() {
+      if (!gameRunning) return;
+      const maxX = wrap.offsetWidth - 80;
+      mimiX += mimiDir * mimiSpeed;
+      if (mimiX <= 8)      { mimiX = 8;    mimiDir = 1;  mimi.style.transform = 'scaleX(1)'; }
+      if (mimiX >= maxX)   { mimiX = maxX; mimiDir = -1; mimi.style.transform = 'scaleX(-1)'; }
+      mimi.style.left = mimiX + 'px';
+      raf = requestAnimationFrame(gameLoop);
+    }
+    raf = requestAnimationFrame(gameLoop);
+
+    /* Click en el área de juego → lanzar pokéball */
+    wrap.addEventListener('click', function(e) {
+      if (caught || !gameRunning) return;
+
+      const rect = wrap.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+
+      /* Crear pokéball lanzada desde abajo-centro */
+      const ball = document.createElement('div');
+      ball.className = 'pokeball-throw';
+      ball.style.left = (rect.width / 2 - 18) + 'px';
+      ball.style.bottom = '44px';
+      ball.innerHTML = pokeballSVG(36);
+      wrap.appendChild(ball);
+
+      /* Animar hacia el punto clicado */
+      const startX = rect.width / 2 - 18;
+      const startY = rect.height - 44 - 18;
+      const dx = clickX - startX - 18;
+      const dy = clickY - startY - 18;
+      ball.animate([
+        { left: startX + 'px', top: startY + 'px', transform: 'scale(0.6) rotate(0deg)' },
+        { left: (startX + dx) + 'px', top: (startY + dy) + 'px', transform: 'scale(1) rotate(360deg)' }
+      ], { duration: 480, easing: 'cubic-bezier(0.2,0.8,0.5,1)', fill: 'forwards' });
+
+      /* ¿Atinó a Mimikyu? */
+      const mimiCenterX = mimiX + 36;
+      const mimiCenterY = wrap.offsetHeight - 44 - 36;
+      const dist = Math.hypot(clickX - mimiCenterX, clickY - mimiCenterY);
+
+      if (dist < 55) {
+        /* ¡HIT! — después de que la ball llega, Mimikyu "desaparece" y sale la sorpresa */
+        setTimeout(() => {
+          ball.remove();
+          mimi.style.display = 'none';
+          gameRunning = false;
+          cancelAnimationFrame(raf);
+          caught = true;
+          hint.style.opacity = '0';
+          showCapture();
+        }, 500);
+      } else {
+        /* Falló — Mimikyu se asusta y acelera */
+        setTimeout(() => ball.remove(), 600);
+        mimi.classList.remove('scared');
+        void mimi.offsetWidth;
+        mimi.classList.add('scared');
+        mimiSpeed = Math.min(mimiSpeed + 0.5, 5.5);
+        /* Mimikyu escapa al lado opuesto */
+        mimiDir = mimiX > wrap.offsetWidth / 2 ? -1 : 1;
+      }
+    });
+
+    function showCapture() {
+      /* Pokéball shake en el centro */
+      const shakeBall = document.createElement('div');
+      shakeBall.className = 'pokeball-shake';
+      shakeBall.style.left  = (wrap.offsetWidth / 2 - 20) + 'px';
+      shakeBall.style.top   = (wrap.offsetHeight / 2 - 60) + 'px';
+      shakeBall.innerHTML   = pokeballSVG(40);
+      wrap.appendChild(shakeBall);
+
+      /* Luego de shake: abrir y revelar la sorpresa */
+      setTimeout(() => {
+        shakeBall.remove();
+        buildResultScreen();
+        result.classList.add('visible');
+        spawnHearts();
+      }, 1100);
+    }
+
+function buildResultScreen() {
+  document.getElementById('result-chars').innerHTML = `
+    <img src="assets/fotos/mayte.png" style="width:120px;object-fit:contain;">
+    <svg width="32" height="32" viewBox="0 0 32 32" style="margin-bottom:8px;flex-shrink:0;">
+      <path d="M16 28 C16 28 2 18 2 9 C2 5.7 4.7 3 8 3 C10.4 3 12.5 4.4 16 7 C19.5 4.4 21.6 3 24 3 C27.3 3 30 5.7 30 9 C30 18 16 28 16 28Z" fill="#f7b8cc" stroke="#e898b0" stroke-width="0.8"/>
+      <path d="M10 8 C9 10 9 13 11 15" stroke="#fff" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+    </svg>
+    <img src="assets/fotos/ilya.png" style="width:120px;object-fit:contain;">
+  `;
+}
+
+    function spawnHearts() {
+      const emojis = ['🌸','💕','🌸','💖','🌷','💗','🌸'];
+      for (let i = 0; i < 9; i++) {
+        setTimeout(() => {
+          const h = document.createElement('div');
+          h.className = 'float-heart';
+          h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          h.style.left  = (10 + Math.random() * 80) + '%';
+          h.style.bottom = (50 + Math.random() * 30) + '%';
+          h.style.animationDelay = (Math.random() * 0.4) + 's';
+          wrap.appendChild(h);
+          setTimeout(() => h.remove(), 2000);
+        }, i * 120);
+      }
+    }
+
+    window.resetGame = function() {
+      result.classList.remove('visible');
+      mimi.style.display = 'block';
+      mimi.style.left = '60px';
+      mimi.style.transform = 'scaleX(1)';
+      mimiX = 60; mimiDir = 1; mimiSpeed = 1.4;
+      caught = false; gameRunning = true;
+      hint.style.opacity = '1';
+      raf = requestAnimationFrame(gameLoop);
+    };
+
+    function pokeballSVG(size) {
+      return `<svg width="${size}" height="${size}" viewBox="0 0 40 40" fill="none">
+        <circle cx="20" cy="20" r="18" fill="#e83030" stroke="#2a2a2a" stroke-width="1.5"/>
+        <path d="M2 20 Q2 38 20 38 Q38 38 38 20Z" fill="white" stroke="#2a2a2a" stroke-width="1.5"/>
+        <line x1="2" y1="20" x2="38" y2="20" stroke="#2a2a2a" stroke-width="1.8"/>
+        <circle cx="20" cy="20" r="5.5" fill="white" stroke="#2a2a2a" stroke-width="1.5"/>
+        <circle cx="20" cy="20" r="2.5" fill="#2a2a2a"/>
+      </svg>`;
+    }
+  })();
+
+  /* ── bordes acuarela ── */
+  function wobble(base, amp) { return base + (Math.random() - 0.5) * amp; }
 
   function watercolorPath(W, H, roughness) {
     const r = roughness;
     const pts = [
-      [wobble(0,r),       wobble(H*0.1,r)],
-      [wobble(0,r),       wobble(H*0.5,r)],
-      [wobble(0,r),       wobble(H*0.9,r)],
-      [wobble(W*0.1,r),   wobble(H,r)],
-      [wobble(W*0.5,r),   wobble(H,r)],
-      [wobble(W*0.9,r),   wobble(H,r)],
-      [wobble(W,r),       wobble(H*0.9,r)],
-      [wobble(W,r),       wobble(H*0.5,r)],
-      [wobble(W,r),       wobble(H*0.1,r)],
-      [wobble(W*0.9,r),   wobble(0,r)],
-      [wobble(W*0.5,r),   wobble(0,r)],
-      [wobble(W*0.1,r),   wobble(0,r)],
+      [wobble(0,r), wobble(H*0.1,r)], [wobble(0,r), wobble(H*0.5,r)],
+      [wobble(0,r), wobble(H*0.9,r)], [wobble(W*0.1,r), wobble(H,r)],
+      [wobble(W*0.5,r), wobble(H,r)], [wobble(W*0.9,r), wobble(H,r)],
+      [wobble(W,r), wobble(H*0.9,r)], [wobble(W,r), wobble(H*0.5,r)],
+      [wobble(W,r), wobble(H*0.1,r)], [wobble(W*0.9,r), wobble(0,r)],
+      [wobble(W*0.5,r), wobble(0,r)], [wobble(W*0.1,r), wobble(0,r)],
     ];
     let d = `M ${pts[0][0]} ${pts[0][1]}`;
     for (let i = 1; i < pts.length; i++) {
-      const prev = pts[i-1];
-      const curr = pts[i];
+      const prev = pts[i-1], curr = pts[i];
       const cx = wobble((prev[0]+curr[0])/2, r*0.4);
       const cy = wobble((prev[1]+curr[1])/2, r*0.4);
       d += ` Q ${cx} ${cy} ${curr[0]} ${curr[1]}`;
     }
-    d += ' Z';
-    return d;
+    return d + ' Z';
   }
 
   function drawWatercolorBorder(svgEl, W, H, strokeColor, fillColor) {
     svgEl.setAttribute('viewBox', `0 0 ${W} ${H}`);
     svgEl.innerHTML = '';
-
     const layers = [
       { roughness: 14, opacity: 0.18, width: 3.5 },
       { roughness: 10, opacity: 0.22, width: 2.5 },
       { roughness:  7, opacity: 0.30, width: 1.8 },
       { roughness:  5, opacity: 0.55, width: 1.2 },
     ];
-
-    // fondo suave
     const bg = document.createElementNS('http://www.w3.org/2000/svg','path');
     bg.setAttribute('d', watercolorPath(W, H, 8));
     bg.setAttribute('fill', fillColor);
     bg.setAttribute('opacity', '0.6');
     svgEl.appendChild(bg);
-
-    // capas de trazo irregular
     layers.forEach(l => {
       const path = document.createElementNS('http://www.w3.org/2000/svg','path');
       path.setAttribute('d', watercolorPath(W, H, l.roughness));
@@ -744,17 +1222,18 @@
 
   function initBorders() {
     const cards = [
-      { wrap: 'wrap-letter',  border: 'border-letter',  stroke: '#d4a0b8', fill: '#fff5f8' },
-      { wrap: 'wrap-songs',   border: 'border-songs',   stroke: '#d4a0b8', fill: '#fff0f5' },
-      { wrap: 'wrap-spotify', border: 'border-spotify', stroke: '#90c8a8', fill: '#f4faf6' },
+      { wrap: 'wrap-letter',   border: 'border-letter',   stroke: '#d4a0b8', fill: '#fff5f8' },
+      { wrap: 'wrap-songs',    border: 'border-songs',    stroke: '#d4a0b8', fill: '#fff0f5' },
+      { wrap: 'wrap-spotify',  border: 'border-spotify',  stroke: '#90c8a8', fill: '#f4faf6' },
+      { wrap: 'wrap-carta2',   border: 'border-carta2',   stroke: '#d4a0b8', fill: '#fff5f8' },
+      { wrap: 'wrap-galeria',  border: 'border-galeria',  stroke: '#d4a0b8', fill: '#fff0f5' },
+      { wrap: 'wrap-game',     border: 'border-game',     stroke: '#d4a0b8', fill: '#fff5f8' },
     ];
-
     cards.forEach(({ wrap, border, stroke, fill }) => {
       const wrapEl   = document.getElementById(wrap);
       const borderEl = document.getElementById(border);
-      const W = wrapEl.offsetWidth;
-      const H = wrapEl.offsetHeight;
-      drawWatercolorBorder(borderEl, W, H, stroke, fill);
+      if (!wrapEl || !borderEl) return;
+      drawWatercolorBorder(borderEl, wrapEl.offsetWidth, wrapEl.offsetHeight, stroke, fill);
     });
   }
 
